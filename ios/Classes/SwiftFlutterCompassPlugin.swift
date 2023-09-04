@@ -13,12 +13,10 @@ public class SwiftFlutterCompassPlugin: NSObject, FlutterPlugin, FlutterStreamHa
 
     init(channel: FlutterEventChannel) {
         super.init()
-        location.delegate = self
         location.headingFilter = 0.1;
         channel.setStreamHandler(self);
 
         motion.deviceMotionUpdateInterval = 1.0 / 30.0;
-        motion.startDeviceMotionUpdates(using: CMAttitudeReferenceFrame.xMagneticNorthZVertical);
     }
 
 
@@ -30,13 +28,17 @@ public class SwiftFlutterCompassPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     public func onListen(withArguments arguments: Any?,
                          eventSink: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = eventSink;
+        location.delegate = self;
         location.startUpdatingHeading();
+        motion.startDeviceMotionUpdates(using: CMAttitudeReferenceFrame.xMagneticNorthZVertical);
         return nil;
     }
 
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
         eventSink = nil;
+        location.delegate = nil;
         location.stopUpdatingHeading();
+        motion.stopDeviceMotionUpdates();
         return nil;
     }
 
