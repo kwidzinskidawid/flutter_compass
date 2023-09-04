@@ -10,7 +10,6 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.Surface;
 import android.view.Display;
-import java.lang.Math;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,9 +34,6 @@ public final class FlutterCompassPlugin implements FlutterPlugin, StreamHandler 
 
     // Controls the compass update rate in milliseconds
     private static final int COMPASS_UPDATE_RATE_MS = 17;
-    
-    // Only notify about the heading change if the value exceeds the threshold
-    private static final double HEADING_CHANGE_THRESHOLD = 0.35;
 
     private SensorEventListener sensorEventListener;
 
@@ -278,9 +274,7 @@ public final class FlutterCompassPlugin implements FlutterPlugin, StreamHandler 
             }
 
             private void notifyCompassChangeListeners(double[] heading) {
-                if (Math.abs(heading[0] - lastHeading) > HEADING_CHANGE_THRESHOLD) {
-                    events.success(heading);
-                }
+                events.success(heading);
                 lastHeading = (float) heading[0];
             }
 
